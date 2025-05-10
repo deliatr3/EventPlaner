@@ -1,5 +1,7 @@
-import db from '$lib/server/db.js';
+import { getEvents } from '$lib/server/db.js';
 
 export async function load() {
-  return { events: await db.getEvents() };
+  // hol alle Events aus der DB
+  const events = await getEvents();
+  return { events };
 }
