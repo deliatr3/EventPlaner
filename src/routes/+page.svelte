@@ -1,12 +1,10 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
-
 <script>
-    export let data;
-  </script>
-  
-  {#each data.events as event}
-    <EventCard {event} />
-  {/each}
-  
-  
+  import IntroSection from '$lib/components/IntroSection.svelte';
+  import Calendar from '$lib/components/Calendar.svelte';
+</script>
+
+<IntroSection />
+
+<hr class="my-4" />
+
+<Calendar />

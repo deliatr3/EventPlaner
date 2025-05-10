@@ -6,10 +6,25 @@ await client.connect();
 const db = client.db('eventplanner');
 
 export async function getEvents() {
-  const events = await db.collection('events').find().toArray();
-  return events.map(e => ({ ...e, _id: e._id.toString() }));
+  return db.collection('events').find().toArray();
 }
-
-// Füge hier noch weitere Funktionen wie getEventById, createRegistration, etc. hinzu
-
-export default { getEvents /*, weitere Export-Funktionen */ };
+export async function getEventById(id) {
+  return db.collection('events').findOne({ _id: new ObjectId(id) });
+}
+export async function getRegistrations(eventId) {
+  return db
+    .collection('registrations')
+    .find({ event_id: new ObjectId(eventId) })
+    .toArray();
+}
+export async function createRegistration({ eventId, firstName, email }) {
+  return db.collection('registrations').insertOne({
+    event_id:    new ObjectId(eventId),
+    firstName,
+    email,
+    registeredAt: new Date()
+  });
+}
+export async function getOrganizerById(id) {
+  return db.collection('organizers').findOne({ _id: new ObjectId(id) });
+}
