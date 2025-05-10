@@ -1,30 +1,29 @@
-import { MongoClient, ObjectId } from 'mongodb';
+// src/lib/server/db.js
+import { MongoClient } from 'mongodb';
 import { DB_URI } from '$env/static/private';
 
 const client = new MongoClient(DB_URI);
 await client.connect();
-const db = client.db('eventplanner');
+const db = client.db('EventPlaner');
 
 export async function getEvents() {
-  return db.collection('events').find().toArray();
-}
-export async function getEventById(id) {
-  return db.collection('events').findOne({ _id: new ObjectId(id) });
-}
-export async function getRegistrations(eventId) {
-  return db
-    .collection('registrations')
-    .find({ event_id: new ObjectId(eventId) })
-    .toArray();
-}
-export async function createRegistration({ eventId, firstName, email }) {
-  return db.collection('registrations').insertOne({
-    event_id:    new ObjectId(eventId),
-    firstName,
-    email,
-    registeredAt: new Date()
+  const docs = await db.collection('events').find().toArray();
+
+  return docs.map((doc) => {
+    // Baue erst ein Plain-Object ohne Methoden:
+    const event = {
+      ...doc,
+      _id: doc._id.toString()        // ObjectId → String
+    };
+
+    // Wenn Du später organizerId nutzt, dann hier guarden:
+    if (doc.organizerId) {
+      event.organizerId = doc.organizerId.toString();
+    }
+
+    // Falls Du noch Datum-Objekte hast (z.B. registeredAt), 
+    // wandel die ebenfalls per toISOString() um.
+
+    return event;
   });
-}
-export async function getOrganizerById(id) {
-  return db.collection('organizers').findOne({ _id: new ObjectId(id) });
 }

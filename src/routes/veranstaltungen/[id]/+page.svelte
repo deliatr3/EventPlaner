@@ -1,25 +1,20 @@
+<!-- src/routes/veranstaltungen/+page.svelte -->
 <script>
-  import { enhance } from '$app/forms';
-  import RegistrationForm from '$lib/components/RegistrationForm.svelte';
+  import EventCard from '$lib/components/EventCard.svelte';
   export let data;
-  const { event, registrations } = data;
+  const { events } = data;
 </script>
 
-<h1>{event.title}</h1>
-<p>
-  {event.startDate} {event.startTime} — {event.location}
-</p>
-<p>{event.description}</p>
-<img src={event.imageUrl} alt={event.title} class="img-fluid mb-3" />
+<h1>Alle Veranstaltungen</h1>
 
-<h2>Teilnehmer ({registrations.length})</h2>
-<ul>
-  {#each registrations as r}
-    <li>
-      {r.firstName} – {new Date(r.registeredAt).toLocaleString()}
-    </li>
-  {/each}
-</ul>
-
-<!-- Registrierungsformular mit enhance() -->
-<RegistrationForm use:enhance />
+{#if events.length}
+  <div class="row">
+    {#each events as event}
+      <div class="col-md-6 mb-4">
+        <EventCard {event} />
+      </div>
+    {/each}
+  </div>
+{:else}
+  <p>Keine Veranstaltungen gefunden.</p>
+{/if}

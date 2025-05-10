@@ -1,10 +1,14 @@
 <script>
-  import IntroSection from '$lib/components/IntroSection.svelte';
-  import Calendar from '$lib/components/Calendar.svelte';
+  export let data;
+  const { events } = data;
 </script>
 
-<IntroSection />
-
-<hr class="my-4" />
-
-<Calendar />
+<h1>Alle Veranstaltungen</h1>
+<div class="row">
+  {#each events as event}
+    <div class="col-md-6 mb-4">
+      <!-- benutze jetzt event._id als String -->
+      <EventCard {event} />
+    </div>
+  {/each}
+</div>
