@@ -1,29 +1,59 @@
 // src/lib/server/db.js
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { DB_URI } from '$env/static/private';
 
 const client = new MongoClient(DB_URI);
 await client.connect();
-const db = client.db('EventPlaner');
 
+const db = client.db('EventPlaner'); // <— hier ggf. anpassen
+
+/**
+ * Liefert alle Events als Plain-Objects (inkl. _id als String)
+ */
 export async function getEvents() {
   const docs = await db.collection('events').find().toArray();
 
   return docs.map((doc) => {
-    // Baue erst ein Plain-Object ohne Methoden:
     const event = {
       ...doc,
-      _id: doc._id.toString()        // ObjectId → String
+      _id: doc._id.toString()
     };
 
-    // Wenn Du später organizerId nutzt, dann hier guarden:
     if (doc.organizerId) {
       event.organizerId = doc.organizerId.toString();
     }
 
-    // Falls Du noch Datum-Objekte hast (z.B. registeredAt), 
-    // wandel die ebenfalls per toISOString() um.
-
     return event;
   });
+}
+
+/**
+ * Liefert ein einzelnes Event per ID (als String)
+ * @param {string} id  ObjectId-String
+ */
+export async function getEventById(id) {
+  if (!id) return null;
+
+  if (!ObjectId.isValid(id)) {
+    throw new Error(`Ungültige Event-ID: ${id}`);
+  }
+
+  const doc = await db
+    .collection('events')
+    .findOne({ _id: new ObjectId(id) });
+
+  if (!doc) {
+    return null;
+  }
+
+  const event = {
+    ...doc,
+    _id: doc._id.toString()
+  };
+
+  if (doc.organizerId) {
+    event.organizerId = doc.organizerId.toString();
+  }
+
+  return event;
 }

@@ -1,13 +1,19 @@
 <script>
   export let data;
   const { events } = data;
-  console.log('⚛️ client received events:', events);
+  import EventCard from '$lib/components/EventCard.svelte';
 </script>
 
-<h1>Alle Veranstaltungen</h1>
-<p>Anzahl Events: {events.length}</p>
-<ul>
-  {#each events as e}
-    <li>{e.title} – {e.startDate}</li>
-  {/each}
-</ul>
+<h1 class="mb-4">Alle Veranstaltungen</h1>
+
+{#if events.length}
+  <div class="row">
+    {#each events as event}
+      <div class="col-md-4 mb-4">
+        <EventCard {event} />
+      </div>
+    {/each}
+  </div>
+{:else}
+  <p>Keine Veranstaltungen gefunden.</p>
+{/if}

@@ -1,20 +1,13 @@
-<!-- src/routes/veranstaltungen/+page.svelte -->
 <script>
-  import EventCard from '$lib/components/EventCard.svelte';
   export let data;
-  const { events } = data;
+  const { event } = data;
 </script>
 
-<h1>Alle Veranstaltungen</h1>
+<h1>{event.title}</h1>
 
-{#if events.length}
-  <div class="row">
-    {#each events as event}
-      <div class="col-md-6 mb-4">
-        <EventCard {event} />
-      </div>
-    {/each}
-  </div>
-{:else}
-  <p>Keine Veranstaltungen gefunden.</p>
-{/if}
+<ul class="list-unstyled mt-3">
+  <li><strong>Datum:</strong> {event.date}</li>
+  <li><strong>Uhrzeit:</strong> {event.time}</li>
+  <li><strong>Ort:</strong> {event.venue}</li>
+  <li><strong>Dauer:</strong> {event.duration} Stunden</li>
+</ul>
